@@ -1,0 +1,107 @@
+grammar org.xtext.sdu.IoT with org.eclipse.xtext.common.Terminals
+
+generate ioT "http://www.xtext.org/sdu/IoT"
+
+System:
+	system+=(SensorTypes | Sensor | SensorGroup | SensorGetMethod | DeviceTypes | Device | DeviceGroup | ServerTypes | ServerFromType | Server | DestinationTypes | Destination | FetchData)+
+;
+
+SensorType:
+	name=ID
+;
+
+SensorTypes:
+	'SensorTypes' types+=SensorType (',' types+=SensorType)*
+;
+
+Sensor:
+	'Sensor' name=ID 'of' 'type' type=[SensorType]
+;
+
+SensorGroup:
+	'SensorGroup' name=ID 'include' '{' sensors+=[Sensor] (',' sensors+=[Sensor])* '}'
+;
+
+SensorGetMethod:
+	'SensorGetMethod' method=Method  'for' 'type' type=[SensorType]
+;
+
+Method: 
+	name=ID '(' parameters+=ID (',' parameters+=ID)* ')'
+;
+
+DeviceType:
+	name=ID
+;
+
+DeviceTypes:
+	'DeviceTypes' types+=DeviceType (',' types+=DeviceType)*
+;
+
+Device:
+	'Device' 'of' type=[DeviceType] 'contains' group=[SensorGroup]
+;
+
+DeviceGroup:
+	'DeviceGroup' name=ID 'include' '{' devices+=[Device] (',' devices+=[Device])* '}'
+;
+
+ServerType:
+	name=ID
+;
+
+ServerTypes:
+	'ServerTypes' types+=ServerType (',' types+=ServerType)*
+;
+
+ServerFromType:
+	'Server' name=ID 'of' type=[ServerType]
+;
+
+Server:
+	'Server' name=ID 'listens' 'ip' 'on'  lip=Portnumber 'sends' 'ip' 'on'  sip=Portnumber 'contains' group=[DeviceGroup]
+;
+
+DestinationType:
+	name=ID
+;
+
+DestinationTypes:
+	'DestinationTypes' types+=DestinationType (',' types+=DestinationType)*
+;
+
+Destination:
+	'Destination' name=ID 'of' type=[DestinationType]
+;
+
+FetchData:
+	'Fetch' 'data' 'from' ('type' filter=[SensorType] | 'group' filter=[SensorGroup]) 'to' ('destination' destination=[Destination] | 'server' destination=[Server]) (conExp=FetchDataExpression | conExp=FetchDataCondition)?
+;
+
+FetchDataExpression:
+	'every' duration=Time timeUnit=TimeUnit
+;
+
+FetchDataCondition:
+	('when' | 'if') condition=Condition
+;
+
+TimeUnit:
+	('ms' | 's' | 'm' | 'h')
+;
+
+Condition:
+	'_??'	
+;
+
+Portnumber:
+	{Portnumber} number=NUMBER
+;
+
+Time:
+	time=NUMBER
+;
+
+terminal NUMBER:
+	INT+
+;
