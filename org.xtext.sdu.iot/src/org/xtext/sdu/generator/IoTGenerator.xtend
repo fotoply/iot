@@ -10,6 +10,7 @@ import org.eclipse.xtext.generator.IGeneratorContext
 import org.xtext.sdu.ioT.Sensor
 import org.xtext.sdu.ioT.SensorType
 import org.xtext.sdu.ioT.SensorTypes
+import org.xtext.sdu.ioT.SensorGroup
 
 /**
  * Generates code from your model files on save.
@@ -26,19 +27,20 @@ class IoTGenerator extends AbstractGenerator {
 	protected def generatePythonCode(Resource resourceRoot) '''
 	import pycom
 	import time
-		«FOR sensorTypes : resourceRoot.allContents.filter(SensorTypes).toIterable»
-			«FOR sensorType : sensorTypes.types»
+	«FOR sensorTypes : resourceRoot.allContents.filter(SensorTypes).toIterable»
+		«FOR sensorType : sensorTypes.types»
 		«sensorType.importSensorLibrary»
-			«ENDFOR»
 		«ENDFOR»
+	«ENDFOR»
 	
-		«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
+	«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
 	«sensor.name» = «sensor.type.name»()
-		«ENDFOR»
-		
-		
-		
-		
+	«ENDFOR»
+	
+	«FOR sensorGroup : resourceRoot.allContents.filter(SensorGroup).toIterable»
+	«sensorGroup.name» = [«FOR sensor : sensorGroup.sensors SEPARATOR ','»"«sensor.name»"«ENDFOR»]
+	«ENDFOR»
+			
 	'''
 	
 	protected def importSensorLibrary(SensorType sensorType) '''	

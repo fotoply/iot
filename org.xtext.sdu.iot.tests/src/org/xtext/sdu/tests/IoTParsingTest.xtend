@@ -58,6 +58,31 @@ class IoTParsingTest {
         )
 	}
 	
+	@Test
+	def testSensorGroups() {
+		val model = parseHelper.parse('''
+		SensorTypes Ab
+		Sensor Se of type Ab
+		Sensor De of type Ab
+		SensorGroup Az include Se, De
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	Se = Ab()
+        	De = Ab()
+        	
+        	Az = ["Se","De"]'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
+	
 	def baseImports() '''
 	import pycom
 	import time'''
