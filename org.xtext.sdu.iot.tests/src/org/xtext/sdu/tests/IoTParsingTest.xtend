@@ -10,20 +10,52 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.eclipse.xtext.generator.InMemoryFileSystemAccess
+import org.eclipse.xtext.generator.IGenerator
+import org.eclipse.xtext.generator.IFileSystemAccess
+import org.xtext.sdu.generator.IoTGenerator
 
 @ExtendWith(InjectionExtension)
 @InjectWith(IoTInjectorProvider)
 class IoTParsingTest {
-	@Inject
-	ParseHelper<org.xtext.sdu.ioT.System> parseHelper
+	@Inject ParseHelper<org.xtext.sdu.ioT.System> parseHelper
 	
 	@Test
-	def void loadModel() {
-		val result = parseHelper.parse('''
-			Hello Xtext!
-		''')
-		Assertions.assertNotNull(result)
-		val errors = result.eResource.errors
-		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	def testSensorTypes() {
+		val model = parseHelper.parse('''
+        SensorTypes Ae, Be
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	import Ae from Ae
+        	import Be from Be'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
 	}
+	
+	@Test
+	def testSensors() {
+		val model = parseHelper.parse('''
+		SensorTypes Ab
+        Sensor Se of type Ab
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	import Ab from Ab
+        	
+        	Se = Ab()'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
+	
+	
+	
 }

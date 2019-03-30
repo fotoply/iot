@@ -7,10 +7,9 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.xtext.sdu.ioT.SensorTypes
+import org.xtext.sdu.ioT.Sensor
 import org.xtext.sdu.ioT.SensorType
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.common.util.EList
+import org.xtext.sdu.ioT.SensorTypes
 
 /**
  * Generates code from your model files on save.
@@ -30,6 +29,14 @@ class IoTGenerator extends AbstractGenerator {
 				«sensorType.importSensorLibrary»
 			«ENDFOR»
 		«ENDFOR»
+		
+		«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
+			«sensor.name» = «sensor.type.name»()
+		«ENDFOR»
+		
+		
+		
+		
 	'''
 	
 	protected def importSensorLibrary(SensorType sensorType) '''	
