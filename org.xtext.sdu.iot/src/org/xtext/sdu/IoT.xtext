@@ -39,7 +39,7 @@ DeviceTypes:
 ;
 
 Device:
-	'Device' 'of' type=[DeviceType] 'contains' group=[SensorGroup]
+	'Device' name=ID 'of' 'type' type=[DeviceType] 'contains' group=[SensorGroup]
 ;
 
 DeviceGroup:
