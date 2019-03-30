@@ -25,8 +25,10 @@ class IoTGenerator extends AbstractGenerator {
 	
 	
 	protected def generatePythonCode(Resource resourceRoot) '''	
-		«FOR c : resourceRoot.allContents.filter(SensorTypes).head.types»
-		«c.importSensorLibrary»
+		«FOR sensorTypes : resourceRoot.allContents.filter(SensorTypes).toIterable»
+			«FOR sensorType : sensorTypes.types»
+				«sensorType.importSensorLibrary»
+			«ENDFOR»
 		«ENDFOR»
 	'''
 	
