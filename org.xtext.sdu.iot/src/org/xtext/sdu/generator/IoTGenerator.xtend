@@ -7,6 +7,10 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.xtext.sdu.ioT.SensorTypes
+import org.xtext.sdu.ioT.SensorType
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.common.util.EList
 
 /**
  * Generates code from your model files on save.
@@ -16,10 +20,17 @@ import org.eclipse.xtext.generator.IGeneratorContext
 class IoTGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(Greeting)
-//				.map[name]
-//				.join(', '))
+		fsa.generateFile("system.py", generatePythonCode(resource))
 	}
+	
+	
+	protected def generatePythonCode(Resource resourceRoot) '''	
+		«FOR c : resourceRoot.allContents.filter(SensorTypes).head.types»
+		«c.importSensorLibrary»
+		«ENDFOR»
+	'''
+	
+	protected def importSensorLibrary(SensorType sensorType) '''	
+		import «sensorType.name» from «sensorType.name»
+	'''
 }
