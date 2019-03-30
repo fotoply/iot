@@ -23,15 +23,17 @@ class IoTGenerator extends AbstractGenerator {
 	}
 	
 	
-	protected def generatePythonCode(Resource resourceRoot) '''	
+	protected def generatePythonCode(Resource resourceRoot) '''
+	import pycom
+	import time
 		«FOR sensorTypes : resourceRoot.allContents.filter(SensorTypes).toIterable»
 			«FOR sensorType : sensorTypes.types»
-				«sensorType.importSensorLibrary»
+		«sensorType.importSensorLibrary»
 			«ENDFOR»
 		«ENDFOR»
-		
+	
 		«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
-			«sensor.name» = «sensor.type.name»()
+	«sensor.name» = «sensor.type.name»()
 		«ENDFOR»
 		
 		

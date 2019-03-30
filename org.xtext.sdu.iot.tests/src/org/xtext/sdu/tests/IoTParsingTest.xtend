@@ -31,6 +31,7 @@ class IoTParsingTest {
         IoTGenerator.doGenerate(model.eResource, fsa, null)
         Assertions.assertEquals(
         	'''
+        	«baseImports»
         	import Ae from Ae
         	import Be from Be'''.toString,
         	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
@@ -49,12 +50,17 @@ class IoTParsingTest {
         IoTGenerator.doGenerate(model.eResource, fsa, null)
         Assertions.assertEquals(
         	'''
+        	«baseImports»
         	import Ab from Ab
         	
         	Se = Ab()'''.toString,
         	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
         )
 	}
+	
+	def baseImports() '''
+	import pycom
+	import time'''
 	
 	
 	
