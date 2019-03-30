@@ -19,7 +19,7 @@ Sensor:
 ;
 
 SensorGroup:
-	'SensorGroup' name=ID 'include' '{' sensors+=[Sensor] (',' sensors+=[Sensor])* '}'
+	'SensorGroup' name=ID 'include' sensors+=[Sensor] (',' sensors+=[Sensor])*
 ;
 
 SensorGetMethod:
@@ -43,7 +43,7 @@ Device:
 ;
 
 DeviceGroup:
-	'DeviceGroup' name=ID 'include' '{' devices+=[Device] (',' devices+=[Device])* '}'
+	'DeviceGroup' name=ID 'include' devices+=[Device] (',' devices+=[Device])*
 ;
 
 ServerType:
