@@ -82,7 +82,7 @@ class IoTParsingTest {
         	Se = Ab()
         	De = Ab()
         	
-        	Az = ["Se","De"]'''.toString,
+        	Az = [Se,De]'''.toString,
         	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
         )
 	}
@@ -146,7 +146,7 @@ class IoTParsingTest {
         	Se = Ab()
         	De = Ab()
         	
-        	Az = ["Se","De"]'''.toString,
+        	Az = [Se,De]'''.toString,
         	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
         )
 	}

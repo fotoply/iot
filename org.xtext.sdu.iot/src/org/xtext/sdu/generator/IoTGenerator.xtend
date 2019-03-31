@@ -41,7 +41,7 @@ class IoTGenerator extends AbstractGenerator {
 	
 	protected def CharSequence emitSensorgroup(Resource resourceRoot)
 		'''«FOR sensorGroup : resourceRoot.allContents.filter(SensorGroup).toIterable»
-		«sensorGroup.name» = [«FOR sensor : sensorGroup.sensors SEPARATOR ','»"«sensor.name»"«ENDFOR»]
+		«sensorGroup.name» = [«FOR sensor : sensorGroup.sensors SEPARATOR ','»«sensor.name»«ENDFOR»]
 		«ENDFOR»'''
 	
 	
@@ -73,7 +73,7 @@ class IoTGenerator extends AbstractGenerator {
 		
 	protected def CharSequence emitDevicegroup(Resource resourceRoot)
 		'''«FOR deviceGroup : resourceRoot.allContents.filter(DeviceGroup).toIterable»
-		«deviceGroup.name» = [«FOR device : deviceGroup.devices SEPARATOR ','»"«device.name»"«ENDFOR»]
+		«deviceGroup.name» = [«FOR device : deviceGroup.devices SEPARATOR ','»«device.name»«ENDFOR»]
 		«ENDFOR»'''
 	
 	
