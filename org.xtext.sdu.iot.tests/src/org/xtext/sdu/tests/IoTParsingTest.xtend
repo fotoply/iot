@@ -105,4 +105,49 @@ class IoTParsingTest {
         	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
         )
 	}
+	
+	@Test
+	def testDevices() {
+		val model = parseHelper.parse('''
+		DeviceTypes Ab
+        Device Se of type Ab
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	Se = Ab()'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
+	
+	@Test
+	def testDeviceGroups() {
+		val model = parseHelper.parse('''
+		DeviceTypes Ab
+		Device Se of type Ab
+		Device De of type Ab
+		DeviceGroup Az include Se, De
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	Se = Ab()
+        	De = Ab()
+        	
+        	Az = ["Se","De"]'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
 }
