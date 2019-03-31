@@ -20,6 +20,10 @@ import org.xtext.sdu.generator.IoTGenerator
 class IoTParsingTest {
 	@Inject ParseHelper<org.xtext.sdu.ioT.System> parseHelper
 	
+	def baseImports() '''
+	import pycom
+	import time'''
+	
 	@Test
 	def testSensorTypes() {
 		val model = parseHelper.parse('''
@@ -83,10 +87,22 @@ class IoTParsingTest {
         )
 	}
 	
-	def baseImports() '''
-	import pycom
-	import time'''
 	
-	
-	
+	@Test
+	def testDeviceTypes() {
+		val model = parseHelper.parse('''
+        DeviceTypes Ae, Be
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ae from Ae
+        	import Be from Be'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
 }

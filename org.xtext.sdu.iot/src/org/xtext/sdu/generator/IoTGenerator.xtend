@@ -8,9 +8,11 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.xtext.sdu.ioT.Sensor
+import org.xtext.sdu.ioT.SensorGroup
 import org.xtext.sdu.ioT.SensorType
 import org.xtext.sdu.ioT.SensorTypes
-import org.xtext.sdu.ioT.SensorGroup
+import org.xtext.sdu.ioT.DeviceTypes
+import org.xtext.sdu.ioT.DeviceType
 
 /**
  * Generates code from your model files on save.
@@ -27,23 +29,48 @@ class IoTGenerator extends AbstractGenerator {
 	protected def generatePythonCode(Resource resourceRoot) '''
 	import pycom
 	import time
-	«FOR sensorTypes : resourceRoot.allContents.filter(SensorTypes).toIterable»
-		«FOR sensorType : sensorTypes.types»
-		«sensorType.importSensorLibrary»
-		«ENDFOR»
-	«ENDFOR»
+	«emitSensortypes(resourceRoot)»
+	«emitDevicetypes(resourceRoot)»
 	
-	«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
-	«sensor.name» = «sensor.type.name»()
-	«ENDFOR»
+	«emitSensors(resourceRoot)»
 	
-	«FOR sensorGroup : resourceRoot.allContents.filter(SensorGroup).toIterable»
-	«sensorGroup.name» = [«FOR sensor : sensorGroup.sensors SEPARATOR ','»"«sensor.name»"«ENDFOR»]
-	«ENDFOR»
-			
+	«emitSensorgroup(resourceRoot)»
+		
 	'''
+	
+	protected def CharSequence emitSensorgroup(Resource resourceRoot)
+		'''«FOR sensorGroup : resourceRoot.allContents.filter(SensorGroup).toIterable»
+		«sensorGroup.name» = [«FOR sensor : sensorGroup.sensors SEPARATOR ','»"«sensor.name»"«ENDFOR»]
+		«ENDFOR»'''
+	
+	
+	protected def CharSequence emitSensors(Resource resourceRoot)
+		'''«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
+		«sensor.name» = «sensor.type.name»()
+		«ENDFOR»'''
+	
+	
+	protected def CharSequence emitSensortypes(Resource resourceRoot)
+		'''«FOR sensorTypes : resourceRoot.allContents.filter(SensorTypes).toIterable»
+			«FOR sensorType : sensorTypes.types»
+			«sensorType.importSensorLibrary»
+			«ENDFOR»
+			«ENDFOR»'''
+			
+			
+		protected def CharSequence emitDevicetypes(Resource resourceRoot)
+		'''«FOR deviceTypes : resourceRoot.allContents.filter(DeviceTypes).toIterable»
+			«FOR deviceType : deviceTypes.types»
+			«deviceType.importDeviceLibrary»
+			«ENDFOR»
+			«ENDFOR»'''
+	
 	
 	protected def importSensorLibrary(SensorType sensorType) '''	
 		import «sensorType.name» from «sensorType.name»
+	'''
+	
+	protected def importDeviceLibrary(DeviceType deviceType) '''	
+		import «deviceType.name» from «deviceType.name»
 	'''
 }
