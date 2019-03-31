@@ -13,6 +13,7 @@ import org.xtext.sdu.ioT.SensorType
 import org.xtext.sdu.ioT.SensorTypes
 import org.xtext.sdu.ioT.DeviceTypes
 import org.xtext.sdu.ioT.DeviceType
+import org.xtext.sdu.ioT.Device
 
 /**
  * Generates code from your model files on save.
@@ -32,10 +33,9 @@ class IoTGenerator extends AbstractGenerator {
 	«emitSensortypes(resourceRoot)»
 	«emitDevicetypes(resourceRoot)»
 	
-	«emitSensors(resourceRoot)»
+	«emitSensors(resourceRoot)»«emitDevices(resourceRoot)»
 	
 	«emitSensorgroup(resourceRoot)»
-		
 	'''
 	
 	protected def CharSequence emitSensorgroup(Resource resourceRoot)
@@ -58,12 +58,17 @@ class IoTGenerator extends AbstractGenerator {
 			«ENDFOR»'''
 			
 			
-		protected def CharSequence emitDevicetypes(Resource resourceRoot)
+	protected def CharSequence emitDevicetypes(Resource resourceRoot)
 		'''«FOR deviceTypes : resourceRoot.allContents.filter(DeviceTypes).toIterable»
 			«FOR deviceType : deviceTypes.types»
 			«deviceType.importDeviceLibrary»
 			«ENDFOR»
 			«ENDFOR»'''
+			
+	protected def CharSequence emitDevices(Resource resourceRoot)
+		'''«FOR device : resourceRoot.allContents.filter(Device).toIterable»
+		«device.name» = «device.type.name»()
+		«ENDFOR»'''
 	
 	
 	protected def importSensorLibrary(SensorType sensorType) '''	

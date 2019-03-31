@@ -20,6 +20,10 @@ import org.xtext.sdu.generator.IoTGenerator
 class IoTParsingTest {
 	@Inject ParseHelper<org.xtext.sdu.ioT.System> parseHelper
 	
+	def baseImports() '''
+	import pycom
+	import time'''
+	
 	@Test
 	def testSensorTypes() {
 		val model = parseHelper.parse('''
@@ -31,13 +35,94 @@ class IoTParsingTest {
         IoTGenerator.doGenerate(model.eResource, fsa, null)
         Assertions.assertEquals(
         	'''
+        	«baseImports»
         	import Ae from Ae
-        	import Be from Be
-        	'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString
+        	import Be from Be'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
+	
+	@Test
+	def testSensors() {
+		val model = parseHelper.parse('''
+		SensorTypes Ab
+        Sensor Se of type Ab
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	Se = Ab()'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
+	
+	@Test
+	def testSensorGroups() {
+		val model = parseHelper.parse('''
+		SensorTypes Ab
+		Sensor Se of type Ab
+		Sensor De of type Ab
+		SensorGroup Az include Se, De
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	Se = Ab()
+        	De = Ab()
+        	
+        	Az = ["Se","De"]'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
         )
 	}
 	
 	
+	@Test
+	def testDeviceTypes() {
+		val model = parseHelper.parse('''
+        DeviceTypes Ae, Be
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ae from Ae
+        	import Be from Be'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
 	
+	@Test
+	def testDevices() {
+		val model = parseHelper.parse('''
+		DeviceTypes Ab
+        Device Se of type Ab
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	Se = Ab()'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
 }
