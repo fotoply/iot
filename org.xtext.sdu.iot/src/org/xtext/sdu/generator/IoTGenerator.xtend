@@ -15,6 +15,7 @@ import org.xtext.sdu.ioT.DeviceTypes
 import org.xtext.sdu.ioT.DeviceType
 import org.xtext.sdu.ioT.Device
 import org.xtext.sdu.ioT.DeviceGroup
+import org.xtext.sdu.ioT.SensorGetMethod
 
 /**
  * Generates code from your model files on save.
@@ -37,6 +38,18 @@ class IoTGenerator extends AbstractGenerator {
 	«emitSensors(resourceRoot)»«emitDevices(resourceRoot)»
 	
 	«emitSensorgroup(resourceRoot)»«emitDevicegroup(resourceRoot)»
+	
+	«emitSensorGetMethod(resourceRoot)»
+	'''
+	
+	def emitSensorGetMethod(Resource resourceRoot) 
+	'''
+	«IF resourceRoot.allContents.filter(SensorGetMethod).size > 0»
+	getMethods = dict()
+	«ENDIF»
+	«FOR sensorGetMethod : resourceRoot.allContents.filter(SensorGetMethod).toIterable»
+	getMethods[«sensorGetMethod.type.name»_«sensorGetMethod.method.name»(«FOR parameter : sensorGetMethod.method.parameters SEPARATOR ','»«parameter»«ENDFOR»)] = getattr(«sensorGetMethod.type.name»,«sensorGetMethod.method.name»(«FOR parameter : sensorGetMethod.method.parameters SEPARATOR ','»«parameter»«ENDFOR»))
+	«ENDFOR»
 	'''
 	
 	protected def CharSequence emitSensorgroup(Resource resourceRoot)

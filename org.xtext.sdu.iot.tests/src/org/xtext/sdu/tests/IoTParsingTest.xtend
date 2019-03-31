@@ -150,4 +150,27 @@ class IoTParsingTest {
         	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
         )
 	}
+	
+	@Test
+	def testSensorGetMethod() {
+		val model = parseHelper.parse('''
+		SensorTypes Ab
+		SensorGetMethod ab(ba,ca,da) for type Ab
+        ''')
+        val fsa = new InMemoryFileSystemAccess()
+        
+        val IoTGenerator = new IoTGenerator();
+        IoTGenerator.doGenerate(model.eResource, fsa, null)
+        Assertions.assertEquals(
+        	'''
+        	«baseImports»
+        	import Ab from Ab
+        	
+        	
+        	
+        	getMethods = dict()
+        	getMethods[Ab_ab(ba,ca,da)] = getattr(Ab,ab(ba,ca,da))'''.toString,
+        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        )
+	}
 }
