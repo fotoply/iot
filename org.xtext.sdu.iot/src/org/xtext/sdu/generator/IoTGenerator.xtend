@@ -14,7 +14,6 @@ import org.xtext.sdu.ioT.SensorTypes
 import org.xtext.sdu.ioT.DeviceTypes
 import org.xtext.sdu.ioT.DeviceType
 import org.xtext.sdu.ioT.Device
-import org.xtext.sdu.ioT.DeviceGroup
 import org.xtext.sdu.ioT.SensorGetMethod
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -40,7 +39,7 @@ class IoTGenerator extends AbstractGenerator {
 	
 	«emitSensors(resourceRoot)»«emitDevices(resourceRoot)»
 	
-	«emitSensorgroup(resourceRoot)»«emitDevicegroup(resourceRoot)»
+	«emitSensorgroup(resourceRoot)»
 	
 	«emitSensorGetMethod(resourceRoot)»
 	'''
@@ -86,12 +85,6 @@ class IoTGenerator extends AbstractGenerator {
 		'''«FOR device : resourceRoot.allContents.filter(Device).toIterable»
 		«device.name» = «device.type.name»()
 		«ENDFOR»'''
-		
-	protected def CharSequence emitDevicegroup(Resource resourceRoot)
-		'''«FOR deviceGroup : resourceRoot.allContents.filter(DeviceGroup).toIterable»
-		«deviceGroup.name» = [«FOR device : deviceGroup.devices SEPARATOR ','»«device.name»«ENDFOR»]
-		«ENDFOR»'''
-	
 	
 	protected def importSensorLibrary(SensorType sensorType) '''	
 		import «sensorType.name» from «sensorType.name»
