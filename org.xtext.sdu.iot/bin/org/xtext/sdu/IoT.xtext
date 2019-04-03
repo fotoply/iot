@@ -3,7 +3,7 @@ grammar org.xtext.sdu.IoT with org.eclipse.xtext.common.Terminals
 generate ioT "http://www.xtext.org/sdu/IoT"
 
 System:
-	system+=(SensorTypes | Sensor | SensorGroup | SensorGetMethod | DeviceTypes | Device | DeviceGroup | ServerTypes | ServerFromType | Server | DestinationTypes | Destination | FetchData)+
+	system+=(SensorTypes | Sensor | SensorGroup | SensorGetMethod | DeviceTypes | Device | ServerTypes | Server | DestinationTypes | Destination | FetchData)+
 ;
 
 SensorType:
@@ -19,7 +19,7 @@ Sensor:
 ;
 
 SensorGroup:
-	'SensorGroup' name=ID 'include' '{' sensors+=[Sensor] (',' sensors+=[Sensor])* '}'
+	'SensorGroup' name=ID 'include' sensors+=[Sensor] (',' sensors+=[Sensor])*
 ;
 
 SensorGetMethod:
@@ -39,11 +39,7 @@ DeviceTypes:
 ;
 
 Device:
-	'Device' 'of' type=[DeviceType] 'contains' group=[SensorGroup]
-;
-
-DeviceGroup:
-	'DeviceGroup' name=ID 'include' '{' devices+=[Device] (',' devices+=[Device])* '}'
+	'Device' name=ID 'of' 'type' type=[DeviceType] 'contains' ('device' devices=[Device] | 'group' devices=[SensorGroup])
 ;
 
 ServerType:
@@ -54,12 +50,8 @@ ServerTypes:
 	'ServerTypes' types+=ServerType (',' types+=ServerType)*
 ;
 
-ServerFromType:
-	'Server' name=ID 'of' type=[ServerType]
-;
-
 Server:
-	'Server' name=ID 'listens' 'ip' 'on'  lip=Portnumber 'sends' 'ip' 'on'  sip=Portnumber 'contains' group=[DeviceGroup]
+	'Server' name=ID 'of' 'type' type=[ServerType] 'listens' 'on'  ip=Ip 'and' port=Portnumber
 ;
 
 DestinationType:
@@ -94,14 +86,14 @@ Condition:
 	'_??'	
 ;
 
+Ip:
+	{Ip} ip+=INT '.' ip+=INT '.' ip+=INT '.' ip+=INT
+;
+
 Portnumber:
-	{Portnumber} number=NUMBER
+	{Portnumber} number=INT
 ;
 
 Time:
-	time=NUMBER
-;
-
-terminal NUMBER:
-	INT+
+	time=INT
 ;

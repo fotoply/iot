@@ -39,13 +39,9 @@
         eType="#//DeviceType" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Device">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//DeviceType"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="group" eType="#//SensorGroup"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DeviceGroup">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="devices" unique="false"
-        upperBound="-1" eType="#//Device"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//DeviceType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="devices" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ServerType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -54,17 +50,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
         eType="#//ServerType" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ServerFromType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//ServerType"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Server">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="lip" eType="#//Portnumber"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//ServerType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ip" eType="#//Ip" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="port" eType="#//Portnumber"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sip" eType="#//Portnumber"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="group" eType="#//DeviceGroup"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DestinationType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -91,10 +82,14 @@
   <eClassifiers xsi:type="ecore:EClass" name="FetchDataCondition">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="condition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Ip">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ip" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Portnumber">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Time">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
 </ecore:EPackage>
