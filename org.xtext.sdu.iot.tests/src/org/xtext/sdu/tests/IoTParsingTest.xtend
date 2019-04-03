@@ -4,21 +4,26 @@
 package org.xtext.sdu.tests
 
 import com.google.inject.Inject
+import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IGenerator
+import org.eclipse.xtext.generator.InMemoryFileSystemAccess
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
-import org.eclipse.xtext.generator.InMemoryFileSystemAccess
-import org.eclipse.xtext.generator.IGenerator
-import org.eclipse.xtext.generator.IFileSystemAccess
 import org.xtext.sdu.generator.IoTGenerator
 
 @ExtendWith(InjectionExtension)
 @InjectWith(IoTInjectorProvider)
 class IoTParsingTest {
 	@Inject ParseHelper<org.xtext.sdu.ioT.System> parseHelper
+	
+	protected def String removeFirstComment(InMemoryFileSystemAccess fsa) {
+		val f = fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+		f.substring(f.indexOf('\n')+1)
+	}
 	
 	def baseImports() '''
 	import pycom
@@ -33,14 +38,16 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+        val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
         	import Ae from Ae
         	import Be from Be'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        	fileRead
         )
 	}
+	
 	
 	@Test
 	def testSensors() {
@@ -52,13 +59,14 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+		val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
         	import Ab from Ab
         	
         	Se = Ab()'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        	fileRead
         )
 	}
 	
@@ -74,6 +82,7 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+		val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
@@ -83,7 +92,7 @@ class IoTParsingTest {
         	De = Ab()
         	
         	Az = [Se,De]'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        	fileRead
         )
 	}
 	
@@ -97,12 +106,13 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+		val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
         	import Ae from Ae
         	import Be from Be'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        	fileRead
         )
 	}
 	
@@ -116,13 +126,14 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+		val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
         	import Ab from Ab
         	
         	Se = Ab()'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        	fileRead
         )
 	}
 	
@@ -138,6 +149,7 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+		val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
@@ -147,7 +159,7 @@ class IoTParsingTest {
         	De = Ab()
         	
         	Az = [Se,De]'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
+        	fileRead
         )
 	}
 	
@@ -161,6 +173,7 @@ class IoTParsingTest {
         
         val IoTGenerator = new IoTGenerator();
         IoTGenerator.doGenerate(model.eResource, fsa, null)
+        val fileRead = removeFirstComment(fsa)
         Assertions.assertEquals(
         	'''
         	«baseImports»
@@ -169,8 +182,6 @@ class IoTParsingTest {
         	
         	
         	getMethods = dict()
-        	getMethods[Ab_ab(ba,ca,da)] = getattr(Ab,ab(ba,ca,da))'''.toString,
-        	fsa.allFiles.get(IFileSystemAccess::DEFAULT_OUTPUT+"system.py").toString.trim
-        )
+        	getMethods[Ab_ab(ba,ca,da)] = getattr(Ab,ab(ba,ca,da))'''.toString,fileRead)
 	}
 }
