@@ -138,32 +138,6 @@ class IoTParsingTest {
 	}
 	
 	@Test
-	def testDeviceGroups() {
-		val model = parseHelper.parse('''
-		DeviceTypes Ab
-		Device Se of type Ab
-		Device De of type Ab
-		DeviceGroup Az include Se, De
-        ''')
-        val fsa = new InMemoryFileSystemAccess()
-        
-        val IoTGenerator = new IoTGenerator();
-        IoTGenerator.doGenerate(model.eResource, fsa, null)
-		val fileRead = removeFirstComment(fsa)
-        Assertions.assertEquals(
-        	'''
-        	«baseImports»
-        	import Ab from Ab
-        	
-        	Se = Ab()
-        	De = Ab()
-        	
-        	Az = [Se,De]'''.toString,
-        	fileRead
-        )
-	}
-	
-	@Test
 	def testSensorGetMethod() {
 		val model = parseHelper.parse('''
 		SensorTypes Ab
