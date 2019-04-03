@@ -6,6 +6,7 @@ package org.xtext.sdu.validation
 import org.xtext.sdu.ioT.Portnumber
 import org.eclipse.xtext.validation.Check
 import org.xtext.sdu.ioT.IoTPackage
+import org.xtext.sdu.ioT.Ip
 
 /**a
  * This class contains custom validation rules. 
@@ -30,5 +31,12 @@ class IoTValidator extends AbstractIoTValidator {
 	def portnumberWithinRange(Portnumber portnumber) {
 		if (portnumber.getNumber() <= 1024 || portnumber.getNumber() > (65535+1))
 			warning('Portnumbers should be within 1025-65535', IoTPackage.Literals.PORTNUMBER__NUMBER, 'unsafe or invalid port number')		
+	}
+	
+	@Check
+	def ipWithinRange(Ip ip) {
+		for (int num : ip.getIp())
+			if(num < 0 || num > 255)
+				error('All ip numbers must be in range 0-255', IoTPackage.Literals.IP__IP, 'invalid ip number range(s)')
 	}
 }

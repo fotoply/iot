@@ -3,8 +3,10 @@
  */
 package org.xtext.sdu.validation;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.validation.Check;
 import org.xtext.sdu.ioT.IoTPackage;
+import org.xtext.sdu.ioT.Ip;
 import org.xtext.sdu.ioT.Portnumber;
 import org.xtext.sdu.validation.AbstractIoTValidator;
 
@@ -32,6 +34,16 @@ public class IoTValidator extends AbstractIoTValidator {
   public void portnumberWithinRange(final Portnumber portnumber) {
     if (((portnumber.getNumber() <= 1024) || (portnumber.getNumber() > (65535 + 1)))) {
       this.warning("Portnumbers should be within 1025-65535", IoTPackage.Literals.PORTNUMBER__NUMBER, "unsafe or invalid port number");
+    }
+  }
+  
+  @Check
+  public void ipWithinRange(final Ip ip) {
+    EList<Integer> _ip = ip.getIp();
+    for (final int num : _ip) {
+      if (((num < 0) || (num > 255))) {
+        this.error("All ip numbers must be in range 0-255", IoTPackage.Literals.IP__IP, "invalid ip number range(s)");
+      }
     }
   }
 }
