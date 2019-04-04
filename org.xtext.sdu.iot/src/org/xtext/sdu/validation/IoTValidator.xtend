@@ -29,8 +29,13 @@ class IoTValidator extends AbstractIoTValidator {
 
 	@Check
 	def portnumberWithinRange(Portnumber portnumber) {
-		if (portnumber.getNumber() <= 1024 || portnumber.getNumber() > (65535+1))
-			warning('Portnumbers should be within 1025-65535', IoTPackage.Literals.PORTNUMBER__NUMBER, 'unsafe or invalid port number')		
+		if (portnumber.getNumber() <= 1024 || portnumber.getNumber() > (49151)) {
+			warning('It is recommended that port number should be within 1025-49151, as ports outside this range is reserved', IoTPackage.Literals.PORTNUMBER__NUMBER, 'unsafe or invalid port number')		
+		}
+		
+		if (portnumber.getNumber() <= 0 || portnumber.getNumber() > 65535) {
+			error('Invalid port number, has to be within 0 to 65535', IoTPackage.Literals.PORTNUMBER__NUMBER, 'Port number outside of valid range')
+		}
 	}
 	
 	@Check
