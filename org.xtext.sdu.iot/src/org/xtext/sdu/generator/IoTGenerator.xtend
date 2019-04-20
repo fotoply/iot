@@ -35,7 +35,11 @@ class IoTGenerator extends AbstractGenerator {
 		sensorMap.put("lightsensor", "LTR329ALS01");
 		sensorMap.put("altimeter", "MPL3115A2");
 		
-		fsa.generateFile("system.py", generatePythonCode(resource))
+		for(device : resource.allContents.filter(Device).toIterable)
+		{
+			fsa.generateFile(device.name + ".py", generatePythonCode(resource))			
+		}
+		
 		
 		for(server : resource.allContents.filter(Server).toIterable)
 		{
