@@ -27,7 +27,7 @@ SensorGetMethod:
 ;
 
 Method: 
-	name=ID '(' parameters+=ID (',' parameters+=ID)* ')'
+	name=ID '(' (parameters+=ID)* (',' parameters+=ID)* ')'
 ;
 
 DeviceType:
