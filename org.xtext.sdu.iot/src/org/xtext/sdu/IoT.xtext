@@ -67,7 +67,7 @@ Destination:
 ;
 
 FetchData:
-	'Fetch' 'data' 'from' ('type' filter=[SensorType] | 'group' filter=[SensorGroup]) 'to' ('destination' destination=[Destination] | 'server' destination=[Server]) (conExp=FetchDataExpression | conExp=FetchDataCondition)?
+	'Fetch' 'data' 'from' ('type' filter=[SensorType] | 'group' filter=[SensorGroup]) 'for' 'device' device=[Device] 'to' ('destination' destination=[Destination] | 'server' destination=[Server]) (conExp=FetchDataExpression | conExp=FetchDataCondition)?
 ;
 
 FetchDataExpression:
