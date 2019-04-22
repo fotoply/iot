@@ -105,7 +105,7 @@ class IoTGenerator extends AbstractGenerator {
 	«ENDIF»
 	«emitSensortypes(resourceRoot)»
 	«emitDevicetypes(resourceRoot)»
-	
+	py = Pysense()
 	«emitSensors(resourceRoot)»«emitDevices(resourceRoot)»
 	
 	«emitSensorgroup(resourceRoot)»
@@ -130,7 +130,7 @@ class IoTGenerator extends AbstractGenerator {
 	while True:
 	   	time.sleep(«(fetchDataWithServer.conExp as FetchDataExpression).duration.time»)
 	   	«FOR getMethod : resource.allContents.filter(SensorGetMethod).filter[it.type == (fetchDataWithServer.filter as SensorType)].toIterable»
-	   	«server.name»_s.sendall((b'«fetchDataWithServer.device.name»|{0}|'.format(«getMethod.method.name»(«FOR param: getMethod.method.parameters SEPARATOR ','»«param»«ENDFOR»))))
+	   	«server.name»_s.sendall((b'«fetchDataWithServer.device.name»|{0}|'.format(«resource.allContents.filter(Sensor).filter[it.type == fetchDataWithServer.filter as SensorType].head.name».«getMethod.method.name»(«FOR param: getMethod.method.parameters SEPARATOR ','»«param»«ENDFOR»))))
 	   	«ENDFOR»
 	«ENDFOR»
 	'''
@@ -154,7 +154,7 @@ class IoTGenerator extends AbstractGenerator {
 	
 	protected def CharSequence emitSensors(Resource resourceRoot)
 		'''«FOR sensor : resourceRoot.allContents.filter(Sensor).toIterable»
-		«sensor.name» = «sensor.type.name»()
+		«sensor.name» = «sensor.type.name»(py)
 		«ENDFOR»'''
 	
 	
@@ -179,7 +179,7 @@ class IoTGenerator extends AbstractGenerator {
 		«ENDFOR»'''
 	
 	protected def importSensorLibrary(SensorType sensorType) '''	
-		import «getSensorLibraryName(sensorType.name)» as «sensorType.name»
+		from «getSensorLibraryName(sensorType.name)» import «getSensorLibraryName(sensorType.name)» as «sensorType.name»
 		'''
 	
 	protected def importDeviceLibrary(DeviceType deviceType) '''	
