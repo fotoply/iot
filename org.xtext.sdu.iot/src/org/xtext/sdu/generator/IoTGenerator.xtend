@@ -114,7 +114,7 @@ class IoTGenerator extends AbstractGenerator {
 	'''
 	
 	def emitCommunicationLogic(Resource resource, Device scope) '''
-	«val fetches = resource.allContents.filter(FetchData).filter[it.destination instanceof Server]»
+	«val fetches = resource.allContents.filter(FetchData).filter[it.destination instanceof Server].filter[it.device == scope]»
 	wlan = network.WLAN(mode=network.WLAN.STA)
 	«FOR fetchDataWithServer : fetches.toIterable»
 	«val server = fetchDataWithServer.destination as Server»	
